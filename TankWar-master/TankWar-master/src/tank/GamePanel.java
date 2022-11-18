@@ -53,19 +53,32 @@ public class GamePanel extends JFrame {
 
 
     //create player
-    private PlayerOne playerOne = new PlayerOne(Toolkit.getDefaultToolkit().getImage("images/player1/p1tankU.gif"),
-             125, 510,
-            Toolkit.getDefaultToolkit().getImage("images/player1/p1tankU.gif"),Toolkit.getDefaultToolkit().getImage("images/player1/p1tankD.gif"),
-            Toolkit.getDefaultToolkit().getImage("images/player1/p1tankL.gif"),Toolkit.getDefaultToolkit().getImage("images/player1/p1tankR.gif"), this);
+    private PlayerOne playerOne = null;
 
-    private PlayerTwo playerTwo = new PlayerTwo(Toolkit.getDefaultToolkit().getImage("images/player2/p2tankU.gif"),
-            625, 510,
-            Toolkit.getDefaultToolkit().getImage("images/player2/p2tankU.gif"),
-            Toolkit.getDefaultToolkit().getImage("images/player2/p2tankD.gif"),
-            Toolkit.getDefaultToolkit().getImage("images/player2/p2tankL.gif"),
-            Toolkit.getDefaultToolkit().getImage("images/player2/p2tankR.gif"), this);
+    private PlayerTwo playerTwo = null;
+    public PlayerOne getPlayerOne() {
+        return playerOne;
+    }
 
+    public void refreshPlayerOne() {
+        this.playerOne = new PlayerOne(Toolkit.getDefaultToolkit().getImage("images/player1/p1tankU.gif"),
+                125, 510,
+                Toolkit.getDefaultToolkit().getImage("images/player1/p1tankU.gif"),Toolkit.getDefaultToolkit().getImage("images/player1/p1tankD.gif"),
+                Toolkit.getDefaultToolkit().getImage("images/player1/p1tankL.gif"),Toolkit.getDefaultToolkit().getImage("images/player1/p1tankR.gif"), this);
+    }
 
+    public PlayerTwo getPlayerTwo() {
+        return playerTwo;
+    }
+
+    public void refreshPlayerTwo() {
+        this.playerTwo = new PlayerTwo(Toolkit.getDefaultToolkit().getImage("images/player2/p2tankU.gif"),
+                625, 510,
+                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankU.gif"),
+                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankD.gif"),
+                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankL.gif"),
+                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankR.gif"), this);
+    }
 
     //窗口的启动方法
     public void launch(){
@@ -87,8 +100,10 @@ public class GamePanel extends JFrame {
 
         this.addKeyListener(keyMonitor);
         //add walls 60*60
-        for(int i = 0; i< 14; i ++){
-            wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), i*60 ,170, this ));
+        if (level==1){
+            for(int i = 0; i< 14; i ++){
+                wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), i*60 ,170, this ));
+            }
         }
         wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 305 ,560,this ));
         wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 305 ,500,this ));
@@ -242,10 +257,7 @@ public class GamePanel extends JFrame {
                     botList.clear();
                     break;
                 case KeyEvent.VK_ENTER:
-
-
-
-                    //add player
+                    //lose
                     if (state==4&&a==1){//retry
                         if (model==1) {
                             state = 1;
@@ -253,26 +265,41 @@ public class GamePanel extends JFrame {
                                 baseList.add(base);
                             }
                             if (tankList.isEmpty()){
+                                refreshPlayerOne();
                                 tankList.add(playerOne);
                             }
                         }
                         else {
                             state=2;
+
+                            if (baseList.isEmpty()){
+                                baseList.add(base);
+                            }
+                            if (tankList.isEmpty()){
+                                refreshPlayerOne();
+                                refreshPlayerTwo();
+                                tankList.add(playerOne);
+                                tankList.add(playerTwo);
+                            }
                             System.out.println(state);
                         }
+                        bulletList.clear();
                         break;
                     }
                     if (state==4&&a==2){//quit
                         quit();
                         break;
                     }
-                    if(a == 1 && !start){
+                    if(a == 1 && !start){//enter single
                         state=1;
                         model=1;
+                        refreshPlayerOne();
                         tankList.add(playerOne);
-                    }else if (a==2&&!start){
+                    }else if (a==2&&!start){//enter double
                         state=2;
                         model=2;
+                        refreshPlayerOne();
+                        refreshPlayerTwo();
                         tankList.add(playerOne);
                         tankList.add(playerTwo);
                     }
@@ -291,16 +318,41 @@ public class GamePanel extends JFrame {
                     }
                     break;
                 default:
-                    playerOne.keyPressed(e);
-                    playerTwo.keyPressed(e);
+                    if (model==1) {
+                        playerOne.keyPressed(e);
+
+                    }
+
+                    if (model==2)
+                    {
+                        playerOne.keyPressed(e);
+                        playerTwo.keyPressed(e);
+
+                    }
+
+
                     break;
             }
         }
 
         @Override
         public void keyReleased(KeyEvent e){
-            playerOne.keyReleased(e);
-            playerTwo.keyReleased(e);
+
+
+
+
+            if (model==1) {
+                playerOne.keyReleased(e);
+
+            }
+
+            if (model==2)
+            {
+                playerOne.keyReleased(e);
+                playerTwo.keyReleased(e);
+
+            }
+
         }
 
     }
