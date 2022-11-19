@@ -9,9 +9,14 @@ public class PlayerTwo extends Tank {
     private boolean left = false;
     private boolean right = false;
     private boolean down = false;
+    Toolkit Toolkits;
+    public PlayerTwo(int x, int y,  GamePanel gamePanel){
+        super(x, y, gamePanel);
 
-    public PlayerTwo(Image img, int x, int y, Image upImage, Image downImage, Image leftImage, Image rightImage, GamePanel gamePanel){
-        super(img, x, y, upImage, downImage, leftImage, rightImage, gamePanel);
+        setUpImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankU.gif"));
+        setDownImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankD.gif"));
+        setLeftImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankL.gif"));
+        setRightImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankR.gif"));
     }
 
     public void keyPressed(KeyEvent e){

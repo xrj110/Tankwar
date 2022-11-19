@@ -1,8 +1,9 @@
 package tank;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Base extends GameObject {
+public class Base extends GameObject implements Serializable {
     public int width = 60;
     public int height = 60;
     public Base(Image img, int x, int y, GamePanel gamePanel){

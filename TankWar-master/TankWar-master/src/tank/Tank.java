@@ -3,9 +3,10 @@ package tank;
 
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.List;
 
-public class Tank extends GameObject{
+public class Tank extends GameObject implements Serializable {
 
     private boolean attackCoolDown =true;//攻击冷却状态
     private int attackCoolDownTime =1000;//攻击冷却时间毫秒间隔1000ms发射子弹
@@ -24,13 +25,26 @@ public class Tank extends GameObject{
     //坦克头部坐标
     Point p;
 
-    //坦克坐标，方向，图片，方向，面板
-    public Tank(Image img, int x, int y, Image upImage, Image downImage, Image leftImage, Image rightImage, GamePanel gamePanel) {
-        super(img, x, y, gamePanel);
+    public void setUpImage(Image upImage) {
         this.upImage = upImage;
-        this.leftImage = leftImage;
+    }
+
+    public void setDownImage(Image downImage) {
         this.downImage = downImage;
+    }
+
+    public void setRightImage(Image rightImage) {
         this.rightImage = rightImage;
+    }
+
+    public void setLeftImage(Image leftImage) {
+        this.leftImage = leftImage;
+    }
+
+    //坦克坐标，方向，图片，方向，面板
+    public Tank( int x, int y,  GamePanel gamePanel) {
+        super(x, y, gamePanel);
+
     }
 
     public void leftward(){

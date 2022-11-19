@@ -1,11 +1,19 @@
 package tank;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Bot extends Tank{
+public class Bot extends Tank implements Serializable {
+    Toolkit Toolkits;
     int moveTime = 0;
-    public Bot(Image img, int x, int y, Image upImage, Image downImage, Image leftImage, Image rightImage, GamePanel gamePanel) {
-        super(img, x, y, upImage, downImage, leftImage, rightImage, gamePanel);
+    public Bot( int x, int y,  GamePanel gamePanel) {
+        super( x, y, gamePanel);
+
+        setUpImage(Toolkits.getDefaultToolkit().getImage("images/enemy/enemy1U.gif"));
+        setDownImage(Toolkits.getDefaultToolkit().getImage("images/enemy/enemy1D.gif"));
+        setLeftImage(Toolkits.getDefaultToolkit().getImage("images/enemy/enemy1L.gif"));
+        setRightImage(Toolkits.getDefaultToolkit().getImage("images/enemy/enemy1R.gif"));
+
     }
 
     public void go(){

@@ -4,12 +4,16 @@ package tank;
 
 
 
+import org.testng.annotations.Test;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 public class GamePanel extends JFrame {
@@ -43,13 +47,16 @@ public class GamePanel extends JFrame {
     public List<Base> baseList = new ArrayList<>();
     public List<BlastObj> blastList = new ArrayList<>();
 
+    Properties properties=System.getProperties();
+
+    private Toolkit Toolkits;
     //背景图片
-    public Image background = Toolkit.getDefaultToolkit().getImage("images/background.jpg");
+    public Image background = Toolkits.getDefaultToolkit().getImage("images/background.jpg");
     //指针图片
-    private Image select = Toolkit.getDefaultToolkit().getImage("images/selecttank.gif");
+    private Image select = Toolkits.getDefaultToolkit().getImage("images/selecttank.gif");
     //基地
-    private Base base = new Base(Toolkit.getDefaultToolkit().getImage("images/star.gif")
-, 365, 560, this);
+    private Base base = new Base(Toolkits.getDefaultToolkit().getImage("images/star.gif")
+,365, 560, this);
 
 
     //create player
@@ -61,10 +68,8 @@ public class GamePanel extends JFrame {
     }
 
     public void refreshPlayerOne() {
-        this.playerOne = new PlayerOne(Toolkit.getDefaultToolkit().getImage("images/player1/p1tankU.gif"),
-                125, 510,
-                Toolkit.getDefaultToolkit().getImage("images/player1/p1tankU.gif"),Toolkit.getDefaultToolkit().getImage("images/player1/p1tankD.gif"),
-                Toolkit.getDefaultToolkit().getImage("images/player1/p1tankL.gif"),Toolkit.getDefaultToolkit().getImage("images/player1/p1tankR.gif"), this);
+        this.playerOne = new PlayerOne(
+                125, 510, this);
     }
 
     public PlayerTwo getPlayerTwo() {
@@ -72,12 +77,8 @@ public class GamePanel extends JFrame {
     }
 
     public void refreshPlayerTwo() {
-        this.playerTwo = new PlayerTwo(Toolkit.getDefaultToolkit().getImage("images/player2/p2tankU.gif"),
-                625, 510,
-                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankU.gif"),
-                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankD.gif"),
-                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankL.gif"),
-                Toolkit.getDefaultToolkit().getImage("images/player2/p2tankR.gif"), this);
+        this.playerTwo = new PlayerTwo(
+                625, 510, this);
     }
 
     //窗口的启动方法
@@ -102,14 +103,14 @@ public class GamePanel extends JFrame {
         //add walls 60*60
         if (level==1){
             for(int i = 0; i< 14; i ++){
-                wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), i*60 ,170, this ));
+                wallList.add(new Wall( i*60 ,170, this ));
             }
         }
-        wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 305 ,560,this ));
-        wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 305 ,500,this ));
-        wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 365 ,500,this ));
-        wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 425 ,500,this ));
-        wallList.add(new Wall(Toolkit.getDefaultToolkit().getImage("images/walls.gif"), 425 ,560,this ));
+        wallList.add(new Wall( 305 ,560,this ));
+        wallList.add(new Wall( 305 ,500,this ));
+        wallList.add(new Wall( 365 ,500,this ));
+        wallList.add(new Wall( 425 ,500,this ));
+        wallList.add(new Wall( 425 ,560,this ));
         //add base
         baseList.add(base);
 
@@ -124,9 +125,7 @@ public class GamePanel extends JFrame {
                 if (count % 100 == 1 && enemyCount < 10) {
                     Random r = new Random();
                     int rnum =r.nextInt(800);
-                    botList.add(new Bot(Toolkit.getDefaultToolkit().getImage("images/enemy/enemy1U.gif"), rnum, 110,
-                            Toolkit.getDefaultToolkit().getImage("images/enemy/enemy1U.gif"),Toolkit.getDefaultToolkit().getImage("images/enemy/enemy1D.gif"),
-                            Toolkit.getDefaultToolkit().getImage("images/enemy/enemy1L.gif"),Toolkit.getDefaultToolkit().getImage("images/enemy/enemy1R.gif"), this));
+                    botList.add(new Bot( rnum, 110, this));
                     enemyCount++;
                 }
             }
@@ -317,6 +316,15 @@ public class GamePanel extends JFrame {
                         }
                     }
                     break;
+                case KeyEvent.VK_ESCAPE:
+                    try {
+                        Save();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    quit();
+                    break;
+
                 default:
                     if (model==1) {
                         playerOne.keyPressed(e);
@@ -360,5 +368,38 @@ public class GamePanel extends JFrame {
     public static void main(String[] args) {
         GamePanel gamePanel = new GamePanel();
         gamePanel.launch();
+    }
+
+    private void Save() throws IOException {
+
+
+        OutputStream f = new FileOutputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWar");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(f);
+        Information information = new Information();
+        information.setLevel(level+"");
+//        information.setBotList((ArrayList) botList);
+//        information.setTankList((ArrayList)tankList);
+        information.setWallList((ArrayList)wallList);
+        information.setState(state);
+        objectOutputStream.writeObject(information);
+        objectOutputStream.close();
+
+
+
+    }
+
+    private void read() throws IOException, ClassNotFoundException {
+        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWar");
+        ObjectInputStream objectInputStream = new ObjectInputStream(f);
+
+        Information information=(Information) objectInputStream.readObject();
+    }
+    @Test
+    public void test() throws IOException, ClassNotFoundException {
+        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWar");
+        ObjectInputStream objectInputStream = new ObjectInputStream(f);
+
+        Information information=(Information) objectInputStream.readObject();
+        System.out.println(information.toString());
     }
 }

@@ -1,8 +1,9 @@
 package tank;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public abstract class GameObject {
+public abstract class GameObject implements Serializable {
 
     //游戏元素图片
     Image img;
@@ -22,11 +23,19 @@ public abstract class GameObject {
     GamePanel gamePanel;
 
     public GameObject(){}
-    public GameObject(Image img, int x, int y, GamePanel gamePanel) {
-        this.img = img;
+    public GameObject( int x, int y, GamePanel gamePanel) {
+
         this.x = x;
         this.y = y;
         this.gamePanel = gamePanel;
+    }
+
+    public GameObject(Image img, int x,int y, GamePanel gamePanel){
+        this.img=img;
+        this.x = x;
+        this.y = y;
+        this.gamePanel = gamePanel;
+
     }
 
     public Image getImg() {
