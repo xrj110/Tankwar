@@ -4,7 +4,9 @@ package tank;
 
 
 
-import org.testng.annotations.Test;
+//import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,7 +84,7 @@ public class GamePanel extends JFrame {
     }
 
     //窗口的启动方法
-    public void launch(){
+    public void launch() throws FileNotFoundException {
         //标题
         setTitle("Tank Wars");
         //窗口初始大小
@@ -101,6 +103,10 @@ public class GamePanel extends JFrame {
 
         this.addKeyListener(keyMonitor);
         //add walls 60*60
+        if (judgeArchiving()){
+
+            
+        }
         if (level==1){
             for(int i = 0; i< 14; i ++){
                 wallList.add(new Wall( i*60 ,170, this ));
@@ -365,7 +371,7 @@ public class GamePanel extends JFrame {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         GamePanel gamePanel = new GamePanel();
         gamePanel.launch();
     }
@@ -373,13 +379,13 @@ public class GamePanel extends JFrame {
     private void Save() throws IOException {
 
 
-        OutputStream f = new FileOutputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWar");
+        OutputStream f = new FileOutputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(f);
         Information information = new Information();
         information.setLevel(level+"");
 //        information.setBotList((ArrayList) botList);
 //        information.setTankList((ArrayList)tankList);
-        information.setWallList((ArrayList)wallList);
+        information.saveWall(wallList,botList,tankList);
         information.setState(state);
         objectOutputStream.writeObject(information);
         objectOutputStream.close();
@@ -389,17 +395,26 @@ public class GamePanel extends JFrame {
     }
 
     private void read() throws IOException, ClassNotFoundException {
-        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWar");
+        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
         ObjectInputStream objectInputStream = new ObjectInputStream(f);
 
         Information information=(Information) objectInputStream.readObject();
     }
+
+    private boolean judgeArchiving() throws FileNotFoundException {
+
+        File file = new File("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
+        if (file.exists())
+            return true;
+        else return false;
+    }
     @Test
     public void test() throws IOException, ClassNotFoundException {
-        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWar");
-        ObjectInputStream objectInputStream = new ObjectInputStream(f);
-
-        Information information=(Information) objectInputStream.readObject();
-        System.out.println(information.toString());
+//        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
+//        ObjectInputStream objectInputStream = new ObjectInputStream(f);
+//
+//        Information information=(Information) objectInputStream.readObject();
+//        System.out.println(((ObjectRecord)information.wallList.get(0)).getY());
+        System.out.println(judgeArchiving());
     }
 }

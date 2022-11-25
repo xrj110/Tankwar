@@ -17,6 +17,7 @@ public class Wall extends GameObject {
 
 
 
+
     @Override
     public void paintSelf(Graphics g) {
         g.drawImage(img, x, y, null);

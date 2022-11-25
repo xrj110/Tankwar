@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class Information implements Serializable {
-    ArrayList wallList;
-//    ArrayList BotList;
-//    ArrayList TankList;
+    ArrayList wallList=new ArrayList();
+    ArrayList BotList=new ArrayList();
+    ArrayList TankList=new ArrayList();
     String level;
 
     int state;
@@ -28,21 +30,49 @@ public class Information implements Serializable {
         this.wallList = wallList;
     }
 
-//    public List getBotList() {
-//        return BotList;
-//    }
-//
-//    public void setBotList(ArrayList botList) {
-//        BotList = botList;
-//    }
-//
-//    public List getTankList() {
-//        return TankList;
-//    }
-//
-//    public void setTankList(ArrayList tankList) {
-//        TankList = tankList;
-//    }
+    public void saveWall(List<Wall> WallList,List<Bot> BotList,List<Tank> TankList){
+        for (Object temp:WallList
+             ) {
+            ObjectRecord objectRecord = new ObjectRecord();
+            objectRecord.setX(((GameObject) temp).getX());
+            objectRecord.setY(((GameObject) temp).getY());
+            this.wallList.add(objectRecord);
+        }
+        for (Object temp:BotList
+        ) {
+            ObjectRecord objectRecord = new ObjectRecord();
+            objectRecord.setX(((GameObject) temp).getX());
+            objectRecord.setY(((GameObject) temp).getY());
+            this.BotList.add(objectRecord);
+        }
+
+        for (Object temp:TankList
+        ) {
+            ObjectRecord objectRecord = new ObjectRecord();
+            objectRecord.setX(((GameObject) temp).getX());
+            objectRecord.setY(((GameObject) temp).getY());
+            this.TankList.add(objectRecord);
+        }
+
+    }
+
+
+
+    public List getBotList() {
+        return BotList;
+    }
+
+    public void setBotList(ArrayList botList) {
+        BotList = botList;
+    }
+
+    public List getTankList() {
+        return TankList;
+    }
+
+    public void setTankList(ArrayList tankList) {
+        TankList = tankList;
+    }
 
     public String getLevel() {
         return level;
@@ -50,5 +80,26 @@ public class Information implements Serializable {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+}
+class ObjectRecord implements Serializable{
+    int x;
+    int y;
+
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }
