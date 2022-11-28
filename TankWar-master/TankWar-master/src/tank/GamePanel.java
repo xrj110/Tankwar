@@ -4,9 +4,9 @@ package tank;
 
 
 
-//import org.testng.annotations.Test;
+import org.testng.annotations.Test;
 
-import org.junit.Test;
+//import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +48,7 @@ public class GamePanel extends JFrame {
     public List<Bullet> removeList = new ArrayList<>();
     public List<Base> baseList = new ArrayList<>();
     public List<BlastObj> blastList = new ArrayList<>();
-
+    boolean temp=true;
     Properties properties=System.getProperties();
 
     private Toolkit Toolkits;
@@ -84,7 +84,7 @@ public class GamePanel extends JFrame {
     }
 
     //窗口的启动方法
-    public void launch() throws FileNotFoundException {
+    public void launch() throws IOException, ClassNotFoundException {
         //标题
         setTitle("Tank Wars");
         //窗口初始大小
@@ -103,10 +103,13 @@ public class GamePanel extends JFrame {
 
         this.addKeyListener(keyMonitor);
         //add walls 60*60
-        if (judgeArchiving()){
+//        if (judgeArchiving()){
+//
+//
+//
+//
+//        }
 
-            
-        }
         if (level==1){
             for(int i = 0; i< 14; i ++){
                 wallList.add(new Wall( i*60 ,170, this ));
@@ -166,8 +169,20 @@ public class GamePanel extends JFrame {
         gImage.setColor(Color.orange);
         //改变文字大小和样式
         gImage.setFont(new Font("正楷",Font.BOLD,15));
-        gImage.drawString("Current Level:"+level,20,50);
+        if (state!=-1)
+            gImage.drawString("Current Level:"+level,20,50);
         gImage.setFont(new Font("正楷",Font.BOLD,20));
+        try {
+            if (judgeArchiving()&&temp){
+                state=-1;
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        if (state==-1){
+            gImage.drawString("Do you want to continue the last game",250,250);
+            gImage.drawString("please Input Y or N",300,300);
+        }
         if(state == 0){
             //添加文字
             gImage.drawString("Game Models",220,100);
@@ -250,6 +265,41 @@ public class GamePanel extends JFrame {
             //super.keyPressed(e);
             int key = e.getKeyCode();
             switch (key){
+                case KeyEvent.VK_Y:
+                    if (state==-1){
+                        wallList.clear();
+                        temp=false;
+                        try {
+                            obligateGame(read());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        if (tankList.size()==1){
+
+
+                            state=1;
+                            model=1;
+
+                            break;
+                        }else if (tankList.size()==2){
+
+                            state=2;
+                            model=2;
+                            break;
+                        }
+                        else state=4;
+
+                    }
+                    break;
+                case KeyEvent.VK_N:
+                    if (state==-1){
+                        state=0;
+                        deleteRecord();
+                        break;
+                    }
+
                 case KeyEvent.VK_1:
                     y = 150;
                     a = 1;
@@ -371,9 +421,41 @@ public class GamePanel extends JFrame {
 
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         GamePanel gamePanel = new GamePanel();
         gamePanel.launch();
+    }
+
+    public void obligateGame(Information read){
+        List wallRecordList = read.getWallList();
+        for (Object temp:wallRecordList) {
+            int x=((ObjectRecord)temp).getX();
+            int y=((ObjectRecord)temp).getY();
+            wallList.add(new Wall(x,y,this));
+        }
+        List botRecordList = read.getBotList();
+        for (Object temp:botRecordList) {
+            int x=((ObjectRecord)temp).getX();
+            int y=((ObjectRecord)temp).getY();
+            botList.add(new Bot(x,y,this));
+        }
+        List TankRecordList=read.getTankList();
+        if (TankRecordList.size()>0){
+            playerOne=new PlayerOne(((ObjectRecord)TankRecordList.get(0)).getX(),((ObjectRecord)TankRecordList.get(0)).getY(),this);
+
+           tankList.add(playerOne);
+
+        }
+        if (TankRecordList.size()>1){
+
+            playerTwo=new PlayerTwo(((ObjectRecord)TankRecordList.get(1)).getX(),((ObjectRecord)TankRecordList.get(1)).getY(),this);
+
+            tankList.add(playerTwo);
+
+        }
+
+
+
     }
 
     private void Save() throws IOException {
@@ -394,11 +476,16 @@ public class GamePanel extends JFrame {
 
     }
 
-    private void read() throws IOException, ClassNotFoundException {
+    private Information read() throws IOException, ClassNotFoundException {
         InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
         ObjectInputStream objectInputStream = new ObjectInputStream(f);
 
         Information information=(Information) objectInputStream.readObject();
+        return information;
+    }
+    private void deleteRecord(){
+        File file = new File("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
+        file.delete();
     }
 
     private boolean judgeArchiving() throws FileNotFoundException {

@@ -16,9 +16,12 @@ public class PlayerOne extends Tank {
         setDownImage(Toolkits.getDefaultToolkit().getImage("images/player1/p1tankD.gif"));
         setLeftImage(Toolkits.getDefaultToolkit().getImage("images/player1/p1tankL.gif"));
         setRightImage(Toolkits.getDefaultToolkit().getImage("images/player1/p1tankR.gif"));
+
+
     }
 
     public void keyPressed(KeyEvent e){
+
         int key = e.getKeyCode();
         switch (key){
             case KeyEvent.VK_A:
@@ -83,6 +86,7 @@ public class PlayerOne extends Tank {
 
     public void paintSelf(Graphics g) {
         g.drawImage(img, x, y, null);
+        System.out.println("x:"+x+" |y:"+y+"| img:"+img);
         move();
     }
 
