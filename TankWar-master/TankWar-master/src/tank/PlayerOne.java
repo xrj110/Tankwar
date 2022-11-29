@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class PlayerOne extends Tank {
+
     private boolean up = false;
     private boolean left = false;
     private boolean right = false;
@@ -11,7 +12,8 @@ public class PlayerOne extends Tank {
     Toolkit Toolkits;
     public PlayerOne( int x, int y, GamePanel gamePanel){
         super( x, y,  gamePanel);
-
+        index=1;
+        img=Toolkits.getDefaultToolkit().getImage("images/player1/p1tankU.gif");
         setUpImage(Toolkits.getDefaultToolkit().getImage("images/player1/p1tankU.gif"));
         setDownImage(Toolkits.getDefaultToolkit().getImage("images/player1/p1tankD.gif"));
         setLeftImage(Toolkits.getDefaultToolkit().getImage("images/player1/p1tankL.gif"));
@@ -86,7 +88,7 @@ public class PlayerOne extends Tank {
 
     public void paintSelf(Graphics g) {
         g.drawImage(img, x, y, null);
-        System.out.println("x:"+x+" |y:"+y+"| img:"+img);
+
         move();
     }
 

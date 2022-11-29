@@ -4,10 +4,10 @@ package tank;
 
 
 
-//import org.testng.annotations.Test;
+import org.testng.annotations.Test;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-import org.junit.Test;
+
+//import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -376,6 +376,18 @@ public class GamePanel extends JFrame {
                                 tankList.add(playerOne);
                                 tankList.add(playerTwo);
                             }
+                           else if (tankList.size()==1){
+                                Tank tank = tankList.get(0);
+                                if (tank.getIndex()==2){
+                                    refreshPlayerOne();
+                                    tankList.add(playerOne);
+                                }
+                                else{
+                                    refreshPlayerTwo();
+                                    tankList.add(playerTwo);
+                                }
+
+                            }
                             //System.out.println(state);
                         }
                         bulletList.clear();
@@ -389,6 +401,7 @@ public class GamePanel extends JFrame {
                         state=1;
                         model=1;
                         refreshPlayerOne();
+
                         tankList.add(playerOne);
                     }
                     else if (a==2&&!start){//enter double

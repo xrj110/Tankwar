@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Tank extends GameObject implements Serializable {
 
+
+    protected int index;
     private boolean attackCoolDown =true;//攻击冷却状态
     private int attackCoolDownTime =1000;//攻击冷却时间毫秒间隔1000ms发射子弹
     private Image upImage; //向上移动时的图片
@@ -98,6 +100,9 @@ public class Tank extends GameObject implements Serializable {
             }
         }
         return false;
+    }
+    public int getIndex() {
+        return index;
     }
 
     public boolean moveToBorder(int x, int y){

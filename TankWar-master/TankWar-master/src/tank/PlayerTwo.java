@@ -1,10 +1,13 @@
 package tank;
 
 
+
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class PlayerTwo extends Tank {
+
     private boolean up = false;
     private boolean left = false;
     private boolean right = false;
@@ -12,11 +15,12 @@ public class PlayerTwo extends Tank {
     Toolkit Toolkits;
     public PlayerTwo(int x, int y,  GamePanel gamePanel){
         super(x, y, gamePanel);
-
-        setUpImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankU.gif"));
-        setDownImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankD.gif"));
-        setLeftImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankL.gif"));
-        setRightImage(Toolkits.getDefaultToolkit().getImage("images/player2/p1tankR.gif"));
+        index=2;
+        img=Toolkits.getDefaultToolkit().getImage("images/player2/p2tankU.gif");
+        this.setUpImage(Toolkits.getDefaultToolkit().getImage("images/player2/p2tankU.gif"));
+        this.setDownImage(Toolkits.getDefaultToolkit().getImage("images/player2/p2tankD.gif"));
+        this.setLeftImage(Toolkits.getDefaultToolkit().getImage("images/player2/p2tankL.gif"));
+        this.setRightImage(Toolkits.getDefaultToolkit().getImage("images/player2/p2tankR.gif"));
     }
 
     public void keyPressed(KeyEvent e){
@@ -78,6 +82,7 @@ public class PlayerTwo extends Tank {
 
     public void paintSelf(Graphics g) {
         g.drawImage(img, x, y, null);
+        System.out.println("x:"+x+" |y:"+y+"| img:"+img);
         move();
     }
 
