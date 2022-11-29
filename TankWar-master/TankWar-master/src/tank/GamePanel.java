@@ -4,9 +4,10 @@ package tank;
 
 
 
-import org.testng.annotations.Test;
+//import org.testng.annotations.Test;
 
-//import org.junit.Test;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +23,7 @@ public class GamePanel extends JFrame {
 
     /** 定义双缓存图片 */
     private Image offScreenImage = null;
-    //游戏状态: 0 游戏未开始，1 单人模式，2 双人模式， 3 游戏暂停， 4 游戏失败，5 游戏成功
+    //游戏状态:-1 读取存档 0 游戏未开始，1 单人模式，2 双人模式， 3 游戏暂停， 4 游戏失败，5 游戏成功
     public int state= 0;
     //临时变量
     private int model=0;
@@ -49,6 +50,7 @@ public class GamePanel extends JFrame {
     public List<Base> baseList = new ArrayList<>();
     public List<BlastObj> blastList = new ArrayList<>();
     boolean temp=true;
+    boolean goNext=false;
     Properties properties=System.getProperties();
 
     private Toolkit Toolkits;
@@ -115,6 +117,7 @@ public class GamePanel extends JFrame {
                 wallList.add(new Wall( i*60 ,170, this ));
             }
         }
+
         wallList.add(new Wall( 305 ,560,this ));
         wallList.add(new Wall( 305 ,500,this ));
         wallList.add(new Wall( 365 ,500,this ));
@@ -124,13 +127,23 @@ public class GamePanel extends JFrame {
         baseList.add(base);
 
         while (true){
-            if(botList.size() == 0 && enemyCount == 10){
+            if(botList.size() == 0 && enemyCount == 10&&!goNext){
                 state = 5;
+            }
+            if (botList.size()==0&&enemyCount==10&&goNext){
+                if (model==1)
+                    state=1;
+                else state=2;
+                enemyCount=0;
+                count=15;
+            }
+            if (botList.size()==0&&enemyCount==15){
+                state=5;
             }
             if(tankList.size() == 0 && (state == 1 || state == 2)){
                 state = 4;
             }
-            if(state == 1 || state == 2){
+            if((state == 1 || state == 2)&&level==1){
                 if (count % 100 == 1 && enemyCount < 10) {
                     Random r = new Random();
                     int rnum =r.nextInt(800);
@@ -138,7 +151,33 @@ public class GamePanel extends JFrame {
                     enemyCount++;
                 }
             }
+            if ((state == 1 || state == 2)&&level==2){
+                System.out.println("1111");
+                if (goNext){
+                    wallList.clear();
+                    for(int i = 0; i< 14; i +=2){
+                        wallList.add(new Wall( i*60 ,170, this ));
+                    }
+                    wallList.add(new Wall( 305 ,560,this ));
+                    wallList.add(new Wall( 305 ,500,this ));
+                    wallList.add(new Wall( 365 ,500,this ));
+                    wallList.add(new Wall( 425 ,500,this ));
+                    wallList.add(new Wall( 425 ,560,this ));
+                }
+
+                if (enemyCount<count&&goNext){
+                    for (int i=0;i<count;i++){
+                        Random r = new Random();
+                        int rnum =r.nextInt(800);
+                        botList.add(new Bot( rnum, 110, this));
+                        enemyCount++;
+                    }
+                }
+                goNext=false;
+
+            }
             repaint();
+            System.out.println("2222");
             try {
                 //线程休眠
                 Thread.sleep(25);
@@ -310,6 +349,7 @@ public class GamePanel extends JFrame {
                     break;
                 case KeyEvent.VK_0:
                     botList.clear();
+                    count=0;
                     break;
                 case KeyEvent.VK_ENTER:
                     //lose
@@ -336,7 +376,7 @@ public class GamePanel extends JFrame {
                                 tankList.add(playerOne);
                                 tankList.add(playerTwo);
                             }
-                            System.out.println(state);
+                            //System.out.println(state);
                         }
                         bulletList.clear();
                         break;
@@ -350,13 +390,24 @@ public class GamePanel extends JFrame {
                         model=1;
                         refreshPlayerOne();
                         tankList.add(playerOne);
-                    }else if (a==2&&!start){//enter double
+                    }
+                    else if (a==2&&!start){//enter double
                         state=2;
                         model=2;
                         refreshPlayerOne();
                         refreshPlayerTwo();
                         tankList.add(playerOne);
                         tankList.add(playerTwo);
+                    }
+                    //enter next level of game
+                    if (a==1&&state==5){
+                        level=2;
+                        goNext=true;
+                        //loadLevel2();
+
+                    }
+                    if (a==2&&state==5){
+                    quit();
                     }
                     start = true;
                     break;
@@ -453,6 +504,9 @@ public class GamePanel extends JFrame {
             tankList.add(playerTwo);
 
         }
+        this.count=read.getCount();
+        this.enemyCount=read.getEnemyCount();
+        this.level=Integer.parseInt(read.getLevel());
 
 
 
@@ -465,6 +519,8 @@ public class GamePanel extends JFrame {
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(f);
         Information information = new Information();
         information.setLevel(level+"");
+        information.setCount(count);
+        information.setEnemyCount(enemyCount);
 //        information.setBotList((ArrayList) botList);
 //        information.setTankList((ArrayList)tankList);
         information.saveWall(wallList,botList,tankList);
@@ -495,6 +551,10 @@ public class GamePanel extends JFrame {
             return true;
         else return false;
     }
+
+
+
+
     @Test
     public void test() throws IOException, ClassNotFoundException {
 //        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");

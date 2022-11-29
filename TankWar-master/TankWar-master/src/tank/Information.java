@@ -11,6 +11,24 @@ public class Information implements Serializable {
     ArrayList BotList=new ArrayList();
     ArrayList TankList=new ArrayList();
     String level;
+    int enemyCount;
+    int count;
+
+    public int getEnemyCount() {
+        return enemyCount;
+    }
+
+    public void setEnemyCount(int enemyCount) {
+        this.enemyCount = enemyCount;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     int state;
 
