@@ -4,7 +4,7 @@ package tank;
 
 
 
-import org.testng.annotations.Test;
+//import org.testng.annotations.Test;
 
 
 //import org.junit.Test;
@@ -58,6 +58,7 @@ public class GamePanel extends JFrame {
     public Image background = Toolkits.getDefaultToolkit().getImage("images/background.jpg");
     //指针图片
     private Image select = Toolkits.getDefaultToolkit().getImage("images/selecttank.gif");
+    private Image Trophy=Toolkits.getDefaultToolkit().getImage("images/cup.jpg");
     //基地
     private Base base = new Base(Toolkits.getDefaultToolkit().getImage("images/star.gif")
 ,365, 560, this);
@@ -105,12 +106,7 @@ public class GamePanel extends JFrame {
 
         this.addKeyListener(keyMonitor);
         //add walls 60*60
-//        if (judgeArchiving()){
-//
-//
-//
-//
-//        }
+
 
         if (level==1){
             for(int i = 0; i< 14; i ++){
@@ -224,7 +220,9 @@ public class GamePanel extends JFrame {
         }
         if(state == 0){
             //添加文字
-            gImage.drawString("Game Models",220,100);
+            gImage.setFont(new Font("正楷",Font.ITALIC,35));
+            gImage.drawString("Tank War",220,100);
+            gImage.setFont(new Font("正楷",Font.PLAIN,20));
             gImage.drawString("One Player",220,200);
             gImage.drawString("Two Player",220,300);
             gImage.drawString("Pressing 1 or 2 to choice the model，press Enter begin the game",50,400);
@@ -233,11 +231,12 @@ public class GamePanel extends JFrame {
         }
         else if(state == 1||state == 2){
             gImage.setColor(Color.red);
-            gImage.setFont(new Font("仿宋",Font.BOLD,20));
-            gImage.drawString("WASD control the direction",0,510);
-            gImage.drawString("Spacebar fire",0,550);
+            gImage.setFont(new Font("仿宋",Font.PLAIN,15));
+            gImage.drawString("WASD control the direction",5,510);
+            gImage.drawString("Spacebar fire",5,550);
+            gImage.drawString("Press P to pause the game",5,480);
             if(state == 2){
-                gImage.drawString("Arrow keys control direction",575,510);
+                gImage.drawString("Arrow keys control direction",550,510);
                 gImage.drawString("K fire",575,550);
             }
 
@@ -266,6 +265,7 @@ public class GamePanel extends JFrame {
         }
         else if(state == 3){
             gImage.drawString("Game Stop",220,200);
+            gImage.drawString("Press P to continue the game",220,240);
         }
         else if(state == 4){
             gImage.drawString("Defeat, do you want to retry ?",80,100);
@@ -283,8 +283,10 @@ public class GamePanel extends JFrame {
                 gImage.drawString("Pressing 1 or 2 to choice the model，press Enter begin the game",50,400);
                 gImage.drawImage(select,160,y,null);
             }
-            else
-                gImage.drawString("Victory",220,200);
+            else {
+                gImage.drawImage(Trophy, 150, 120, null);
+                gImage.drawString("Congratulations, you have passed the game", 150, 100);
+            }
         }
 
         /* 将缓冲区绘制好的图形整个绘制到容器的画布中 */
@@ -346,6 +348,10 @@ public class GamePanel extends JFrame {
                 case KeyEvent.VK_2:
                     y = 250;
                     a = 2;
+                    break;
+                case KeyEvent.VK_3:
+                    y = 350;
+                    a = 3;
                     break;
                 case KeyEvent.VK_0:
                     botList.clear();
@@ -568,7 +574,7 @@ public class GamePanel extends JFrame {
 
 
 
-    @Test
+
     public void test() throws IOException, ClassNotFoundException {
 //        InputStream f = new FileInputStream("C:/Users/"+properties.getProperty("user.name")+"/Documents/TankWarGame");
 //        ObjectInputStream objectInputStream = new ObjectInputStream(f);
