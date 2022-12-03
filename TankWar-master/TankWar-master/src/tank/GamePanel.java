@@ -148,7 +148,7 @@ public class GamePanel extends JFrame {
                 }
             }
             if ((state == 1 || state == 2)&&level==2){
-                System.out.println("1111");
+
                 if (goNext){
                     wallList.clear();
                     for(int i = 0; i< 14; i +=2){
@@ -173,7 +173,7 @@ public class GamePanel extends JFrame {
 
             }
             repaint();
-            System.out.println("2222");
+
             try {
                 //线程休眠
                 Thread.sleep(25);
@@ -203,9 +203,10 @@ public class GamePanel extends JFrame {
         //改变画笔的颜色
         gImage.setColor(Color.orange);
         //改变文字大小和样式
-        gImage.setFont(new Font("正楷",Font.BOLD,15));
+        gImage.setFont(new Font("正楷",Font.BOLD,12));
         if (state!=-1)
             gImage.drawString("Current Level:"+level,20,50);
+        gImage.drawString("You can press Esc to save and close the game",130,50);
         gImage.setFont(new Font("正楷",Font.BOLD,20));
         try {
             if (judgeArchiving()&&temp){

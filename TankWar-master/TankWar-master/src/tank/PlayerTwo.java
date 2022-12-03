@@ -82,7 +82,7 @@ public class PlayerTwo extends Tank {
 
     public void paintSelf(Graphics g) {
         g.drawImage(img, x, y, null);
-        System.out.println("x:"+x+" |y:"+y+"| img:"+img);
+
         move();
     }
 
